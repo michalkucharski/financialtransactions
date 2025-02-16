@@ -1,13 +1,14 @@
 package com.citibank.transactions.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 public class TaxIn {
 
-    @JsonProperty("tax")
-    @Getter
-    @Setter
-    private TaxesData taxesData;
+    @JsonProperty("category of tax")
+    private String taxCat;
+
+    @JsonProperty("tax value")
+    private double taxValue;
 }
