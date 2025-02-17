@@ -1,9 +1,9 @@
 package com.citibank.transactions.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class TransactionIn {
 
     @JsonProperty("transactionId")

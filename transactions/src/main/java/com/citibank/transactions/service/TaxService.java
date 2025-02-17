@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface TaxService {
 
-    public TaxesData submitNewTax(TaxIn taxIn);
+    public void submitNewTax(TaxIn taxIn);
     public TaxesData findTaxById(String taxId);
     public List<TaxesData> findAllTaxes();
 }

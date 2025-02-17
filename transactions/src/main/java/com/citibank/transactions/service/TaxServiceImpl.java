@@ -6,6 +6,7 @@ import com.citibank.transactions.repository.TaxRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,8 +16,14 @@ public class TaxServiceImpl  implements TaxService{
     TaxRepository taxRepository;
 
     @Override
-    public TaxesData submitNewTax(TaxIn taxIn) {
-        return taxRepository.save(taxIn.getTaxesData());
+    public void submitNewTax(TaxIn taxIn) {
+        var taxData = new TaxesData();
+        LocalDateTime auditDate = LocalDateTime.now();
+        taxData.setTaxCat(taxIn.getTaxCat());
+        taxData.setTaxValue(taxIn.getTaxValue());
+        taxData.setInsertDate(auditDate.toString());
+        taxData.setUpdateDate(auditDate.toString());
+        taxRepository.save(taxData);
     }
 
     @Override

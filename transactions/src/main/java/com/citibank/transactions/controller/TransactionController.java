@@ -60,6 +60,7 @@ public class TransactionController {
             return ResponseEntity.internalServerError().body(ex.getMessage());
         }
 
+        return ResponseEntity.accepted().body("The new transaction was submitted successfully");
     }
 
     @GetMapping(path="/retrieveTransaction/{id}")
