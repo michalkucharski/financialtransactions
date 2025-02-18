@@ -127,10 +127,9 @@ public class TransactionController {
     public ResponseEntity<?> retrieveTax(@PathVariable("id") String taxId) throws InvalidRequestException, TaxNotFoundException {
 
         var taxOut = new TaxesData();
-        if (taxId == null ) {
+        if (taxId == null) {
             throw new InvalidRequestException("TaxId is not informed ");
         }
-
 
 
         try {
@@ -139,6 +138,8 @@ public class TransactionController {
             if (taxOut == null) {
                 throw new TaxNotFoundException("Tax ist not founded");
             }
+        } catch (TaxNotFoundException et) {
+            throw et;
         } catch (Exception ex) {
             return ResponseEntity.internalServerError().body(ex.getMessage());
         }

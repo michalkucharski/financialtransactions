@@ -1,6 +1,6 @@
 package com.citibank.transactions.exceptions;
 
-public class TaxNotFoundException  extends Exception{
+public class TaxNotFoundException  extends RuntimeException{
 
     public TaxNotFoundException(String message) {
         super(message);

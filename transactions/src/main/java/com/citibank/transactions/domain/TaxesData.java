@@ -8,18 +8,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "taxes")
 public class TaxesData {
 
-    @JsonProperty("tax ID")
-    private String taxId;
+//    private String taxId;
 
-    @JsonProperty("category of tax")
     private String taxCat;
 
-    @JsonProperty("tax value")
     private double taxValue;
 
-    @JsonProperty("insert date")
     private String insertDate;
 
-    @JsonProperty("update date")
     private String updateDate;
 }

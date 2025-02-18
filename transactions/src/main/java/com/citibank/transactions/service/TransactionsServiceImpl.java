@@ -33,7 +33,7 @@ public class TransactionsServiceImpl implements TransactionsService {
         trxData.setInsertDate(auditDate.toString());
         trxData.setUpdateDate(auditDate.toString());
         String taxCat = String.valueOf(TaxCategory.valueOf(trxData.getGoodsType()));
-        TaxesData taxData = taxRepository.findByTaxId(taxCat).findFirst().orElseThrow(() -> new TaxNotFoundException("The tax value was not founded"));
+        TaxesData taxData = taxRepository.findByTaxCat(taxCat).findFirst().orElseThrow(() -> new TaxNotFoundException("The tax value was not founded"));
         trxData.setNetAmount(transaction.getAmount() - transaction.getAmount()*taxData.getTaxValue());
         transactionRepository.save(trxData);
     }

@@ -27,8 +27,8 @@ public class TaxServiceImpl  implements TaxService{
     }
 
     @Override
-    public TaxesData findTaxById(String taxId) {
-        return taxRepository.findByTaxId(taxId).findFirst().orElse(null);
+    public TaxesData findTaxById(String taxCat) {
+        return taxRepository.findByTaxCat(taxCat).findFirst().orElse(null);
     }
 
     @Override

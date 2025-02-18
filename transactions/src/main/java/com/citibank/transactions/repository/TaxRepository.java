@@ -9,5 +9,5 @@ import java.util.stream.Stream;
 @Repository
 public interface TaxRepository extends MongoRepository<TaxesData, String> {
 
-    public Stream<TaxesData> findByTaxId(String taxId);
+    public Stream<TaxesData> findByTaxCat(String taxCat);
 }
