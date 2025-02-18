@@ -7,11 +7,11 @@ import com.citibank.transactions.exceptions.TaxNotFoundException;
 import com.citibank.transactions.exceptions.TransactionNotFoundException;
 import com.citibank.transactions.service.TaxServiceImpl;
 import com.citibank.transactions.service.TransactionsServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,6 +24,7 @@ public class TransactionController {
     @Autowired
     TaxServiceImpl taxService;
 
+    @Operation(summary = "Submit new transaction")
     @PostMapping(path="/submitTransaction")
     public ResponseEntity<?> submitTransaction(@RequestBody TransactionIn transactionIn) throws InvalidRequestException {
 
@@ -47,13 +48,13 @@ public class TransactionController {
             throw new InvalidRequestException("Type of goods should be informed");
         }
 
+        if(transactionIn.getTaxCat().isEmpty()) {
+            throw new InvalidRequestException("Tax category should be informed");
+        }
 
-        if (!transactionIn.getPaymentMethod().toUpperCase().contains(PaymentMethods.values().toString())) {
+        if (PaymentMethods.valueOf(transactionIn.getPaymentMethod().toUpperCase()) == null) {
             throw new InvalidRequestException("Payment methods is not allowed");
         }
-//        final TipoTrx output = TipoTrx.valueOf(tipofinal);
-//        setTipo(output.toString());
-
         try {
             transactionsService.submitTransaction(transactionIn);
         } catch (Exception ex) {
@@ -63,6 +64,7 @@ public class TransactionController {
         return ResponseEntity.accepted().body("The new transaction was submitted successfully");
     }
 
+    @Operation(summary = "Get a transaction by its id")
     @GetMapping(path="/retrieveTransaction/{id}")
     public ResponseEntity<TransactionsData> retrieveTrx(@PathVariable("id") String transactionId) throws InvalidRequestException, TransactionNotFoundException {
 
@@ -80,6 +82,7 @@ public class TransactionController {
 
     }
 
+    @Operation(summary = "Retrieve all tranmsactions")
     @GetMapping(path="/retrieveTransaction")
     public ResponseEntity<?> retrieveAllTrx() throws TransactionNotFoundException {
 
@@ -99,6 +102,7 @@ public class TransactionController {
 
     }
 
+    @Operation(summary = "Submit new tax")
     @PostMapping(path="/submitTax")
     public ResponseEntity<String> submitTax(@RequestBody TaxIn taxIn) throws InvalidRequestException {
 
@@ -123,6 +127,7 @@ public class TransactionController {
         return ResponseEntity.accepted().body("The new tax was submitted successfully");
     }
 
+    @Operation(summary = "Get a tax by its id/category")
     @GetMapping(path="/retrieveTax/{id}")
     public ResponseEntity<?> retrieveTax(@PathVariable("id") String taxId) throws InvalidRequestException, TaxNotFoundException {
 
@@ -148,6 +153,7 @@ public class TransactionController {
 
     }
 
+    @Operation(summary = "Retrieve all transactions")
     @GetMapping(path="/retrieveTax")
     public ResponseEntity<?> retrieveAllTaxes() {
 

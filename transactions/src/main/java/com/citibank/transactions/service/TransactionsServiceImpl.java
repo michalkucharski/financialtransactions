@@ -3,7 +3,6 @@ package com.citibank.transactions.service;
 import com.citibank.transactions.domain.TaxesData;
 import com.citibank.transactions.domain.TransactionIn;
 import com.citibank.transactions.domain.TransactionsData;
-import com.citibank.transactions.enums.TaxCategory;
 import com.citibank.transactions.exceptions.TaxNotFoundException;
 import com.citibank.transactions.repository.TaxRepository;
 import com.citibank.transactions.repository.TransactionRepository;
@@ -32,8 +31,8 @@ public class TransactionsServiceImpl implements TransactionsService {
         trxData.setGrossAmount(transaction.getAmount());
         trxData.setInsertDate(auditDate.toString());
         trxData.setUpdateDate(auditDate.toString());
-        String taxCat = String.valueOf(TaxCategory.valueOf(trxData.getGoodsType()));
-        TaxesData taxData = taxRepository.findByTaxCat(taxCat).findFirst().orElseThrow(() -> new TaxNotFoundException("The tax value was not founded"));
+        trxData.setTaxCat(transaction.getTaxCat());
+        TaxesData taxData = taxRepository.findByTaxCat(transaction.getTaxCat().toUpperCase()).findFirst().orElseThrow(() -> new TaxNotFoundException("The tax value was not founded"));
         trxData.setNetAmount(transaction.getAmount() - transaction.getAmount()*taxData.getTaxValue());
         transactionRepository.save(trxData);
     }

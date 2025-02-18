@@ -33,6 +33,11 @@ public class TransactionsData {
     @Setter
     private String goodsType;
 
+    @JsonProperty("tax category")
+    @Getter
+    @Setter
+    private String taxCat;
+
     @JsonProperty("insert date")
     @Getter
     @Setter
