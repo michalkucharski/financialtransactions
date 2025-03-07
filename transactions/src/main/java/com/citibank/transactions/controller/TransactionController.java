@@ -32,27 +32,28 @@ public class TransactionController {
             throw new InvalidRequestException("No data to submit");
         }
 
-        if (transactionIn.getTransactionId().isEmpty()) {
+        if (transactionIn.transactionId().isEmpty()) {
             throw new InvalidRequestException("Transaction Id is not informed");
         }
 
-        if (transactionIn.getAmount() < 1 ) {
+        if (transactionIn.amount() < 1 ) {
             throw new InvalidRequestException("Transaction amount should be more than 0");
         }
 
-        if (transactionIn.getPaymentMethod().isEmpty()) {
+        if (transactionIn.paymentMethod().isEmpty()) {
             throw new InvalidRequestException("Payment method should be informed");
         }
 
-        if(transactionIn.getGoodsType().isEmpty()) {
+        if(transactionIn.goodsType().isEmpty()) {
             throw new InvalidRequestException("Type of goods should be informed");
         }
 
-        if(transactionIn.getTaxCat().isEmpty()) {
+        if(transactionIn.taxCat().isEmpty()) {
             throw new InvalidRequestException("Tax category should be informed");
         }
 
-        if (PaymentMethods.valueOf(transactionIn.getPaymentMethod().toUpperCase()) == null) {
+        String paymentMetUp = transactionIn.paymentMethod().toUpperCase();
+        if (PaymentMethods.valueOf(paymentMetUp) == null) {
             throw new InvalidRequestException("Payment methods is not allowed");
         }
         try {
@@ -82,7 +83,7 @@ public class TransactionController {
 
     }
 
-    @Operation(summary = "Retrieve all tranmsactions")
+    @Operation(summary = "Retrieve all transactions")
     @GetMapping(path="/retrieveTransaction")
     public ResponseEntity<?> retrieveAllTrx() throws TransactionNotFoundException {
 
@@ -110,11 +111,11 @@ public class TransactionController {
             throw new InvalidRequestException("No data to submit");
         }
 
-        if (taxIn.getTaxCat().isEmpty()) {
-            throw new InvalidRequestException("Tax category is not informmed");
+        if (taxIn.taxCat().isEmpty()) {
+            throw new InvalidRequestException("Tax category is not informed");
         }
 
-        if (taxIn.getTaxValue() < 0.1) {
+        if (taxIn.taxValue() < 0.1) {
             throw new InvalidRequestException("The minimal tax rate is 0.1");
         }
 
@@ -138,6 +139,7 @@ public class TransactionController {
 
 
         try {
+            String taxIdUp = taxId.toUpperCase();
             taxOut = taxService.findTaxById(taxId);
 
             if (taxOut == null) {

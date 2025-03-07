@@ -25,15 +25,16 @@ public class TransactionsServiceImpl implements TransactionsService {
     public void submitTransaction(TransactionIn transaction) throws TaxNotFoundException{
 
         var trxData = new TransactionsData();
+        var taxCatUp = transaction.taxCat().toUpperCase();
         LocalDateTime auditDate = LocalDateTime.now();
-        trxData.setTransactionId(transaction.getTransactionId());
-        trxData.setGoodsType(transaction.getGoodsType());
-        trxData.setGrossAmount(transaction.getAmount());
+        trxData.setTransactionId(transaction.transactionId());
+        trxData.setGoodsType(transaction.goodsType());
+        trxData.setGrossAmount(transaction.amount());
         trxData.setInsertDate(auditDate.toString());
         trxData.setUpdateDate(auditDate.toString());
-        trxData.setTaxCat(transaction.getTaxCat());
-        TaxesData taxData = taxRepository.findByTaxCat(transaction.getTaxCat().toUpperCase()).findFirst().orElseThrow(() -> new TaxNotFoundException("The tax value was not founded"));
-        trxData.setNetAmount(transaction.getAmount() - transaction.getAmount()*taxData.getTaxValue());
+        trxData.setTaxCat(taxCatUp);
+        TaxesData taxData = taxRepository.findByTaxCat(transaction.taxCat().toUpperCase()).findFirst().orElseThrow(() -> new TaxNotFoundException("The tax value was not founded"));
+        trxData.setNetAmount(transaction.amount() - transaction.amount()*taxData.getTaxValue());
         transactionRepository.save(trxData);
     }
 

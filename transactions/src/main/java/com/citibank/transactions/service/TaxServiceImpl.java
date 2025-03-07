@@ -19,8 +19,8 @@ public class TaxServiceImpl  implements TaxService{
     public void submitNewTax(TaxIn taxIn) {
         var taxData = new TaxesData();
         LocalDateTime auditDate = LocalDateTime.now();
-        taxData.setTaxCat(taxIn.getTaxCat());
-        taxData.setTaxValue(taxIn.getTaxValue());
+        taxData.setTaxCat(taxIn.taxCat());
+        taxData.setTaxValue(taxIn.taxValue());
         taxData.setInsertDate(auditDate.toString());
         taxData.setUpdateDate(auditDate.toString());
         taxRepository.save(taxData);
