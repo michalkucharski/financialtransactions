@@ -38,10 +38,10 @@ public class TransactionControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private TaxService taxService;
+    private TaxServiceImpl taxService;
 
     @Mock
-    private TransactionsService transactionsService;
+    private TransactionsServiceImpl transactionsService;
 
     @InjectMocks
     private TransactionController transactionController;

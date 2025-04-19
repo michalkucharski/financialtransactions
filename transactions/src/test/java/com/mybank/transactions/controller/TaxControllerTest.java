@@ -3,26 +3,21 @@ package com.mybank.transactions.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybank.transactions.domain.TaxIn;
 import com.mybank.transactions.domain.TaxesData;
-import com.mybank.transactions.exceptions.GlobalExceptionHandler;
-import com.mybank.transactions.service.TaxService;
 import com.mybank.transactions.service.TaxServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,32 +26,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(TaxController.class)
 public class TaxControllerTest {
+
+    @Autowired
     private MockMvc mockMvc;
 
-    private TaxesData validOutput;
-    @Mock
+    @MockitoBean
     private TaxServiceImpl taxService;
 
-    @InjectMocks
-    private TaxController taxController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    void setUp() {
-        // Configure exception handler for the controller
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(taxController)
-                .setControllerAdvice(new GlobalExceptionHandler()) // Assuming you have a global exception handler
-                .build();
-
-        LocalDateTime dataRecord = LocalDateTime.now();
-        validOutput = new TaxesData();
-        validOutput.setTaxCat("SPECIALTAX");
-        validOutput.setTaxValue(0.51);
-        validOutput.setInsertDate(dataRecord.toString());
-        validOutput.setUpdateDate(dataRecord.toString());
-    }
 
     @Test
     void submitTax_ValidInput_ReturnsAccepted() throws Exception {
@@ -151,18 +130,23 @@ public class TaxControllerTest {
     @Test
     void retrieveTax_ValidId_ReturnsTaxData() throws Exception {
         // Arrange
-        given(taxService.findTaxById("SPECIALTAX")).willReturn(validOutput);
-    //    when(taxService.findTaxById("SPECIALTAX")).thenReturn(validOutput);
+        TaxesData sampleTaxesData = new TaxesData();
+        sampleTaxesData.setTaxCat("VAT");
+        sampleTaxesData.setTaxValue(0.21);
+        sampleTaxesData.setInsertDate("2025-04-18T10:15:30");
+        sampleTaxesData.setUpdateDate("2025-04-18T10:15:30");
+
+        when(taxService.findTaxById("VAT")).thenReturn(sampleTaxesData);
 
         // Act & Assert
-        mockMvc.perform(get("/taxes/v1/retrieveTax/{id}", "SPECIALTAX")
+        mockMvc.perform(get("/taxes/v1/retrieveTax/{id}", "VAT")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.taxCat").value("SPECIALTAX"))
-                .andExpect(jsonPath("$.taxValue").value(0.51));
+                .andExpect(jsonPath("$.taxCat").value("VAT"))
+                .andExpect(jsonPath("$.taxValue").value(0.21));
 
-        verify(taxService, times(1)).findTaxById("SPECIALTAX");
+        verify(taxService, times(1)).findTaxById("VAT");
     }
 
     @Test
@@ -190,6 +174,33 @@ public class TaxControllerTest {
         verify(taxService, times(1)).findTaxById("STNDTAX");
     }
 
+    @Test
+    void retrieveAllTaxes_ReturnsTaxData() throws Exception {
+        // Arrange
+        TaxesData sampleTaxesData = new TaxesData();
+        sampleTaxesData.setTaxCat("VAT");
+        sampleTaxesData.setTaxValue(0.21);
+        sampleTaxesData.setInsertDate("2025-04-18T10:15:30");
+        sampleTaxesData.setUpdateDate("2025-04-18T10:15:30");
 
+        TaxesData sampleTaxesData1 = new TaxesData();
+        sampleTaxesData1.setTaxCat("SPECIALTAX");
+        sampleTaxesData1.setTaxValue(0.26);
+        sampleTaxesData1.setInsertDate("2025-05-18T10:15:30");
+        sampleTaxesData1.setUpdateDate("2025-05-18T10:15:30");
+
+        List<TaxesData> taxesDataList = Arrays.asList(sampleTaxesData, sampleTaxesData1);
+
+        when(taxService.findAllTaxes()).thenReturn(taxesDataList);
+
+        // Act & Assert
+        mockMvc.perform(get("/taxes/v1/retrieveTax")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()").value(2));
+
+        verify(taxService, times(2)).findAllTaxes();
+    }
 
 }
